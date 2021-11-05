@@ -5,8 +5,7 @@ const {src, dest, watch, parallel, series} = require('gulp'),
       uglify = require('gulp-uglify-es').default,
       autoprefixer = require('gulp-autoprefixer'),
       imagemin = require('gulp-imagemin'),
-      del = require('del'),
-      kit = require('gulp-kit'),
+      del = require('del');
 
 
 function browsersync() {
@@ -36,16 +35,10 @@ function images() {
             ]))
             .pipe(dest('app/img'));
 }
-
-function html() {
-    return src(['src/kit/*.kit', '!src/kit/header.kit', '!src/kit/footer.kit', '!src/kit/js.kit'])
-            .pipe(kit())
-            .pipe(dest('src/'))
-            .pipe(browserSync.stream());
-}
       
 function styles() {
     return src('src/scss/style.scss')
+            .pipe(scss({outputStyle: 'compressed'}))
             .pipe(concat('style.min.css'))
             .pipe(autoprefixer({
                 overrideBrowserslist: ['last 10 version'],
@@ -61,6 +54,7 @@ function scripts() {
         'src/js/script.js'
     ])
         .pipe(concat('script.min.js'))
+        .pipe(uglify())
         .pipe(dest('src/js'))
         .pipe(browserSync.stream());
 }
@@ -78,7 +72,7 @@ function build() {
 function watching() {
     watch(['src/scss/**/*.scss'], styles);
     watch(['src/js/**/*.js', '!src/js/script.min.js'], scripts);
-    watch(['src/kit/*.kit'], html);
+    watch(['src/*.html']).on('change', browserSync.reload);
 }
 
 exports.styles = styles;
@@ -90,4 +84,4 @@ exports.cleanApp = cleanApp;
 
 
 exports.build = series(cleanApp, images, build);
-exports.default = parallel(html, styles, scripts, browsersync, watching); 
+exports.default = parallel(styles, scripts, browsersync, watching); 
