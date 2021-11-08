@@ -40,21 +40,26 @@ window.addEventListener('DOMContentLoaded', () => {
         
     };
 
+    // if the page has reloaded, then apply the styles for the grid
+    if (sessionStorage.getItem("is_reloaded")) {
+        setTimeout(() => {styles();}, 10);
+    }
+
     const cards = [{
-            name: 'компьютер',
+            name: 'Macbook',
             description: `компьютер apple`,
             link: `
                 https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp16-spacegray-gallery5-202110?wid=2000&hei=1536&fmt=jpeg&qlt=95&.v=1632799183000
             `,
-            price: '10 000',
+            price: '500000',
         },
         {
-            name: 'компьютер',
-            description: `компьютер apple`,
+            name: 'Ipad',
+            description: `Планшет apple`,
             link: `
-                https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp16-spacegray-gallery5-202110?wid=2000&hei=1536&fmt=jpeg&qlt=95&.v=1632799183000
+                https://www.duchuymobile.com/images/news/42/ipad-pro-2021.JPG
             `,
-            price: '10 000',
+            price: '100000',
         },
         {
             name: 'Путевка на водопад',
@@ -62,20 +67,13 @@ window.addEventListener('DOMContentLoaded', () => {
             link: `
                 https://nikonpro.ru/sites/default/files/uploaded/plato_putorana_23901_0.jpg
             `,
-            price: '10 000',
-        },
-        {
-            name: 'Наименование товара',
-            description: `
-                Довольно-таки интересное описание товара в несколько строк. Довольно-таки
-                интересное описание товара в несколько строк
-            `,
-            link: `
-                https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp16-spacegray-gallery5-202110?wid=2000&hei=1536&fmt=jpeg&qlt=95&.v=1632799183000
-            `,
-            price: '10 000',
+            price: '50000',
         }
     ];
+    // add card data to the localStorage if it is empty and convert it to an string
+    if (!localStorage.getItem('cards')) {
+        localStorage.setItem('cards', JSON.stringify(cards));
+    }
 
     // create card
     class Card {
@@ -83,7 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
             this.name = name;
             this.description = description;
             this.link = link;
-            this.price = price;
+            this.price = price.replace(/\D/gi, '').replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
             this.id = id;
         }
 
@@ -117,14 +115,15 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // take data from localStorage and convert it to an array
+    const storageCards = JSON.parse(localStorage.getItem('cards'));
     // add cardds on page
-    cards.forEach(({name, description, link, price, id}, i) => {
+    storageCards.forEach(({name, description, link, price, id}, i) => {
         new Card(name, description, link, price, i).render();
     });
 
     // convert the NodeList to a regular array and get rid of unnecessary elements
     let cardsContainer = [...productsCards.childNodes].filter(card => card.nodeName === 'DIV');
-
     //* DELETE====================================================================================
     // find cards by date attribute and delete
     const deleteCards = (i) => {
@@ -134,6 +133,10 @@ window.addEventListener('DOMContentLoaded', () => {
         productsCards.innerHTML = '';
         productsCards.append(...cardsContainer);
         styles();
+
+        // delete the data of one card and put the new array in localStorage
+        storageCards.splice(i, 1);
+        localStorage.setItem('cards', JSON.stringify(storageCards));
     };
 
     // hang an event handler with a delete function on the basket
@@ -207,6 +210,10 @@ window.addEventListener('DOMContentLoaded', () => {
         cardsContainer = [...productsCards.childNodes].filter(card => card.nodeName === 'DIV');
 
         styles();
+        
+        // add the data of one card and put the new array in localStorage
+        storageCards.push(emptyCard);
+        localStorage.setItem('cards', JSON.stringify(storageCards));
     };
 
 

@@ -54,7 +54,7 @@ function scripts() {
         'src/js/script.js'
     ])
         .pipe(concat('script.min.js'))
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(dest('src/js'))
         .pipe(browserSync.stream());
 }
