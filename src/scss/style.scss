@@ -98,6 +98,7 @@ body {
 	&__header {
 		@include flexbox();
 		justify-content: space-between;
+		flex-wrap: wrap;
 		align-items: center;
 		margin: 0 0 16px 0;
 	}
@@ -107,6 +108,9 @@ body {
 		font-size: 28px;
 		line-height: 35px;
 		color: #3F3F3F;
+		@media (max-width: $md3+px) {
+			margin: 0 0 16px 0;
+		}
 	}
 	// .products__select
 	&__select {
@@ -145,6 +149,10 @@ body {
 					@include rotate(-45deg);
 				}
 				&.active {
+					+.products__filter {
+						opacity: 1;
+						visibility: visible;
+					}
 					&::before {
 						@include rotate(-45deg);
 					}
@@ -157,7 +165,8 @@ body {
 		
 	}
 	&__filter{
-		display: none;
+		opacity: 0;
+		visibility: hidden;
 		position: absolute;
 		top: 26px;
 		right: 0;
@@ -166,16 +175,25 @@ body {
 		background: #FFFEFB;
 		box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 		border-radius: 0 0 4px 4px;
-		padding: 15px 5px 5px;
+		padding: 15px 0 5px;
 		z-index: 3;
+		transition: all .4s ease;
 		li {
 			font-size: 12px;
 			line-height: 15px;
+			padding: 5px;
+			border-bottom: 1px solid #3F3F3F;
 			color: #B4B4B4;
 			transition: all .4s ease;
 			cursor: url('../img/hover.png') 10 10, auto;
+			&:last-child {
+				border: 0;
+			}
 			&:hover {
 				color: #3F3F3F;
+			}
+			&.active {
+				color: #4324cc;
 			}
 		}
 	}
@@ -184,12 +202,21 @@ body {
 		display: grid;
 		grid-template: 1fr / minmax(250px, 1fr) 3fr;
 		gap: 16px;
+		@media (max-width: $md2+px) {
+			grid-template: 1fr / minmax(200px, 1fr) 3fr;
+		}
+		@media (max-width: $md4+px) {
+			grid-template: auto 1fr / 1fr;
+		}
 	}
 	// .products__cards
 	&__cards {
 		display: grid;
 		gap: 16px;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		@media (max-width: $md2+px) {
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		}
 	}
 }
 
@@ -270,6 +297,12 @@ body {
 				line-height: 15px;
 				color: #B4B4B4;
 			}
+			@media (max-width: $md2+px) {
+				padding: 9px 8px 10px;
+			}
+			@media (max-width: $md4+px) {
+				padding: 9px 15px 10px;
+			}
 		}
 		input {
 			transition: all .4s ease;
@@ -322,6 +355,12 @@ body {
 				cursor: not-allowed;
 			}
 		}
+	}
+	@media (max-width: $md2+px) {
+		padding: 16px 8px;
+	}
+	@media (max-width: $md4+px) {
+		padding: 24px;
 	}
 }
 .card {
